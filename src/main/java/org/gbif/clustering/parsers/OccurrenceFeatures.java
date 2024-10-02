@@ -102,7 +102,7 @@ public interface OccurrenceFeatures {
    */
   default String getScopedIdentifier() {
     String[] codes = {getInstitutionCode(), getCatalogNumber()};
-    if (!Arrays.stream(codes).anyMatch(Objects::isNull)) {
+    if (Arrays.stream(codes).noneMatch(Objects::isNull)) {
       return String.join(":", codes);
     } else {
       return null;
