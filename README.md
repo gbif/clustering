@@ -34,7 +34,7 @@ Run the job
 ```
 hdfs dfs -rm -r /tmp/clustering
 
-nohup sudo -u hdfs spark2-submit --class org.gbif.pipelines.clustering.Cluster \
+nohup sudo -u hdfs spark2-submit --class org.gbif.clustering.Cluster \
   --master yarn --num-executors 100 \
   --executor-cores 4 \
   --conf spark.dynamicAllocation.enabled=false \
