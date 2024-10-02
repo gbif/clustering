@@ -5,7 +5,7 @@ Processes occurrence data and establishes links between similar records.
 The output is a set of HFiles suitable for bulk loading into HBase which drives the pipeline lookup and 
 public related occurrence API.
 
-Build the project: `mvn spotless:apply test package -Pextra-artifacts`
+Build the project: `mvn spotless:apply test package`
 
 To run this against a completely new table:
 
@@ -44,7 +44,7 @@ nohup sudo -u hdfs spark2-submit --class org.gbif.clustering.Cluster \
   --conf spark.executor.memoryOverhead=4096 \
   --conf spark.debug.maxToStringFields=100000 \
   --conf spark.network.timeout=600s \
-  clustering-gbif-2.18.0-SNAPSHOT.jar \
+  clustering-gbif-1.0.0-SNAPSHOT.jar \
   --hive-db prod_TODO \
   --source-table occurrence \
   --hive-table-prefix clustering \
