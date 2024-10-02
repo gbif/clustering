@@ -17,6 +17,44 @@
   <name>GBIF :: Clustering</name>
   <description>Batch process to cluster all GBIF records</description>
 
+  <distributionManagement>
+    <site>
+      <id>gh-pages</id>
+      <url>https://gbif.github.io/clustering/</url>
+    </site>
+    <repository>
+      <id>gbif-release</id>
+      <url>https://repository.gbif.org/content/repositories/releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>gbif-deploy</id>
+      <url>https://repository.gbif.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>gbif-central</id>
+      <url>https://repository.gbif.org/repository/central/</url>
+    </repository>
+    <repository>
+      <id>gbif-release</id>
+      <url>https://repository.gbif.org/repository/releases/</url>
+    </repository>
+    <repository>
+      <id>gbif-snapshot</id>
+      <url>https://repository.gbif.org/repository/snapshots/</url>
+    </repository>
+    <repository>
+      <id>gbif-thirdparty</id>
+      <url>https://repository.gbif.org/repository/thirdparty/</url>
+    </repository>
+    <repository>
+      <id>typesafe-release</id>
+      <url>https://repository.gbif.org/repository/typesafe/</url>
+    </repository>
+  </repositories>
+
   <properties>
     <!-- Common variables -->
     <jdkLevel>11</jdkLevel>
