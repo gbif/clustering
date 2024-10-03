@@ -237,18 +237,27 @@ public class RowOccurrenceFeatures implements OccurrenceFeatures {
 
   List<String> listOrNull(String field) {
     Object o = get(field);
+    return listOrNull(o);
+  }
+
+  List<String> listOrNull(Object o) {
 
     // what follows exists only to simply testing (List) and Spark using Hive (Seq) integrations
     if (o == null) {
       return null;
-    } else if (o instanceof Seq) {
-      return JavaConverters.seqAsJavaListConverter((Seq<String>) o).asJava();
-    } else if (o instanceof List) {
-      return (List<String>) o;
-    } else {
-      log.error("listOrNull is {}: {}", o.getClass(), o);
-      throw new IllegalArgumentException(
-          "Expected a Seq or List for " + field + " is " + o.getClass() + " K: " + o);
     }
+    if (o instanceof Seq) {
+      return JavaConverters.seqAsJavaListConverter((Seq<String>) o).asJava();
+    }
+    if (o instanceof List) {
+      return (List<String>) o;
+    }
+    if (o instanceof Row) {
+      Row rowField = (Row) o;
+      Object concepts = rowField.getAs("concepts");
+      return listOrNull(concepts);
+    }
+    log.error("listOrNull is {}: {}", o.getClass(), o);
+    throw new IllegalArgumentException("Expected a Seq or List");
   }
 }
