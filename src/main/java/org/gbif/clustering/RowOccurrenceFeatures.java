@@ -247,7 +247,8 @@ public class RowOccurrenceFeatures implements OccurrenceFeatures {
       return (List<String>) o;
     } else {
       log.error("listOrNull is {}: {}", o.getClass(), o);
-      throw new IllegalArgumentException("Expected a Seq or List for " + field);
+      throw new IllegalArgumentException(
+          "Expected a Seq or List for " + field + " is " + o.getClass() + " K: " + o);
     }
   }
 }
