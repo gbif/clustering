@@ -16,7 +16,10 @@ pipeline {
   stages {
     stage('Maven build') {
       environment {
-        VERSION = """${sh(returnStdout: true, script: './build/get-version.sh ${RELEASE}')}"""
+        VERSION = """${sh(
+          returnStdout: true,
+          script: './build/get-version.sh ${RELEASE}'
+        )}"""
       }
       steps {
         configFileProvider([configFile(fileId: 'org.jenkinsci.plugins.configfiles.maven.GlobalMavenSettingsConfig1387378707709', variable: 'MAVEN_SETTINGS')]) {

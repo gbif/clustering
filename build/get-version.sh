@@ -8,4 +8,4 @@ if [[ $IS_M2RELEASEBUILD = true ]]; then
   POM_VERSION=${POM_VERSION%-SNAPSHOT}
 fi
 
-echo POM_VERSION
+echo "${POM_VERSION}"
