@@ -17,11 +17,14 @@
   <name>GBIF :: Clustering</name>
   <description>Batch process to cluster all GBIF records</description>
 
+  <scm>
+    <connection>scm:git:git@github.com:gbif/clustering.git</connection>
+    <url>https://github.com/gbif/clustering</url>
+    <developerConnection>scm:git:git@github.com:gbif/clustering.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
   <distributionManagement>
-    <site>
-      <id>gh-pages</id>
-      <url>https://gbif.github.io/clustering/</url>
-    </site>
     <repository>
       <id>gbif-release</id>
       <url>https://repository.gbif.org/content/repositories/releases</url>
