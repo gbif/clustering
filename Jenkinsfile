@@ -38,7 +38,7 @@ pipeline {
       steps {
         configFileProvider([configFile(fileId: 'org.jenkinsci.plugins.configfiles.maven.GlobalMavenSettingsConfig1387378707709', variable: 'MAVEN_SETTINGS')]) {
           git 'https://github.com/gbif/clustering.git'
-          sh 'mvn -s $MAVEN_SETTINGS release:prepare release:perform site site:stage -Denforcer.skip=true -DskipTests'
+          sh 'mvn -s $MAVEN_SETTINGS release:prepare release:perform -Denforcer.skip=true -DskipTests'
         }
       }
     }
