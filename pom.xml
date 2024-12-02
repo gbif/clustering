@@ -274,10 +274,6 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <configuration>
             <doclint>none</doclint>
-            <includeDependencySources>false</includeDependencySources>
-            <dependencySourceIncludes>
-              <dependencySourceInclude>org.gbif:*</dependencySourceInclude>
-            </dependencySourceIncludes>
           </configuration>
         </plugin>
         <plugin>
