@@ -11,6 +11,7 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '10'))
     skipStagesAfterUnstable()
     timestamps()
+    disableConcurrentBuilds()
   }
 
   parameters {
