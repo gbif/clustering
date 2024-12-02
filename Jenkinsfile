@@ -14,9 +14,6 @@ pipeline {
     booleanParam(name: 'RELEASE', defaultValue: false, description: 'Make a Maven release')
   }
   environment {
-    tools {
-      maven 'Maven 3.8.5'
-    }
     VERSION = """${sh(
       returnStdout: true,
       script: './build/get-version.sh ${RELEASE}'
