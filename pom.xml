@@ -90,7 +90,7 @@
 
     <maven-scala-plugin.version>4.8.0</maven-scala-plugin.version>
     <googleJavaFormat.version>1.17.0</googleJavaFormat.version>
-
+    <maven-plugin-plugin.version>3.9.0</maven-plugin-plugin.version>
     <sonar.skip>true</sonar.skip>
   </properties>
 
