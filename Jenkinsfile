@@ -14,15 +14,16 @@ pipeline {
     booleanParam(name: 'RELEASE', defaultValue: false, description: 'Make a Maven release')
   }
   environment {
-    VERSION = """${sh(
-      returnStdout: true,
-      script: './build/get-version.sh ${RELEASE}'
-    )}"""
+    VERSION = ''
   }
   stages {
     stage('Maven build') {
       steps {
         configFileProvider([configFile(fileId: 'org.jenkinsci.plugins.configfiles.maven.GlobalMavenSettingsConfig1387378707709', variable: 'MAVEN_SETTINGS')]) {
+          VERSION = """${sh(
+            returnStdout: true,
+            script: './build/get-version.sh ${RELEASE}'
+          )}"""
           sh 'mvn -s $MAVEN_SETTINGS clean verify deploy -B -U'
         }
       }
