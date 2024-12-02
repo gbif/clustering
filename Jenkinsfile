@@ -17,13 +17,16 @@ pipeline {
     VERSION = ''
   }
   stages {
+    stage('Set project version') {
+      steps {
+        script {
+          VERSION = """${sh(returnStdout: true, script: './build/get-version.sh ${RELEASE}')}"""
+        }
+      }
+    }
     stage('Maven build') {
       steps {
         configFileProvider([configFile(fileId: 'org.jenkinsci.plugins.configfiles.maven.GlobalMavenSettingsConfig1387378707709', variable: 'MAVEN_SETTINGS')]) {
-          env.VERSION = """${sh(
-            returnStdout: true,
-            script: './build/get-version.sh ${RELEASE}'
-          )}"""
           sh 'mvn -s $MAVEN_SETTINGS clean verify deploy -B -U'
         }
       }
