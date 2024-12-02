@@ -33,6 +33,7 @@ public class BaseSparkTest {
           new SparkConf()
               .setMaster("local[*]")
               .setAppName("test")
+              .set("spark.driver.bindAddress", "127.0.0.1")
               .set("spark.driver.allowMultipleContexts", "true")
               .set("spark.ui.enabled", "false")
               .set("spark.testing", "true"); // ignore memory check
