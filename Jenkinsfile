@@ -1,6 +1,8 @@
 pipeline {
-
   agent any
+  environment {
+    VERSION = ''
+  }
 
   tools {
     maven 'Maven 3.8.5'
@@ -23,6 +25,7 @@ pipeline {
     stage('Maven build') {
       steps {
         configFileProvider([configFile(fileId: 'org.jenkinsci.plugins.configfiles.maven.GlobalMavenSettingsConfig1387378707709', variable: 'MAVEN_SETTINGS')]) {
+          VERSION = sh(script: './build/get-version.sh $RELEASE', returnStdout: true).trim()
           sh 'mvn -s $MAVEN_SETTINGS clean verify deploy -B -U'
         }
       }
@@ -45,10 +48,9 @@ pipeline {
 
     stage('Build and push Docker images: Clustering') {
       steps {
-        sh 'build/clustering-docker-build.sh'
+        sh 'build/clustering-docker-build.sh $RELEASE $VERSION'
       }
     }
-
   }
 
   post {
