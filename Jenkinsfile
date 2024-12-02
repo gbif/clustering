@@ -13,11 +13,10 @@ pipeline {
   parameters {
     booleanParam(name: 'RELEASE', defaultValue: false, description: 'Make a Maven release')
   }
-  environment {
-    VERSION = """${sh(returnStdout: true,script: './build/get-version.sh $RELEASE')}"""
-  }
   stages {
-
+    environment {
+      VERSION = """${sh(returnStdout: true,script: './build/get-version.sh $RELEASE')}"""
+    }
     stage('Maven build') {
       steps {
         configFileProvider([configFile(fileId: 'org.jenkinsci.plugins.configfiles.maven.GlobalMavenSettingsConfig1387378707709', variable: 'MAVEN_SETTINGS')]) {
@@ -25,7 +24,6 @@ pipeline {
         }
       }
     }
-
     stage('Release version to nexus') {
       when {
         allOf {
@@ -40,14 +38,12 @@ pipeline {
         }
       }
     }
-
     stage('Build and push Docker images: Clustering') {
       steps {
         sh 'build/clustering-docker-build.sh $RELEASE $VERSION'
       }
     }
   }
-
   post {
     success {
       echo 'Pipeline executed successfully!'
@@ -56,5 +52,4 @@ pipeline {
       echo 'Pipeline execution failed!'
     }
   }
-
 }
