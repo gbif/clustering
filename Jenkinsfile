@@ -13,14 +13,11 @@ pipeline {
   parameters {
     booleanParam(name: 'RELEASE', defaultValue: false, description: 'Make a Maven release')
   }
-  environment {
-    VERSION = ''
-  }
   stages {
     stage('Set project version') {
       steps {
         script {
-          VERSION = """${sh(returnStdout: true, script: './build/get-version.sh ${RELEASE}')}"""
+          env.VERSION = """${sh(returnStdout: true, script: './build/get-version.sh ${RELEASE}')}"""
         }
       }
     }
