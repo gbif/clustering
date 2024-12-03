@@ -14,6 +14,21 @@ pipeline {
     booleanParam(name: 'RELEASE', defaultValue: false, description: 'Make a Maven release')
   }
   stages {
+    stage('Validate') {
+      when {
+        allOf {
+          expression { params.RELEASE }
+          not {
+             branch 'master'
+          }
+        }
+      }
+      steps {
+        script {
+          error('Releases are only allowed from the master branch.')
+        }
+      }
+    }
     stage('Set project version') {
       steps {
         script {
