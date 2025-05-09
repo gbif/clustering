@@ -101,7 +101,7 @@ class HashUtilities {
   private static Set<Row> specimenHashes(OccurrenceFeatures o) {
     Set<Row> hashes = new HashSet<>();
     String bor = o.getBasisOfRecord();
-    if (SPECIMEN_BASIS_OF_RECORD_SET.contains(bor)) {
+    if (bor != null && SPECIMEN_BASIS_OF_RECORD_SET.contains(bor)) {
 
       // non-numeric identifiers for specimens used across datasets
       Set<String> codes = hashCodesAndIDs(o, true);
