@@ -174,7 +174,7 @@ public class Cluster implements Serializable {
             String.format(
                 "SELECT "
                     + "t1.gbifId as id1, t1.datasetKey as ds1, t2.gbifId as id2, t2.datasetKey as ds2 "
-                    + "FROM %s_hashes_filtered t1 JOIN %s_hashes_filtered t2 ON t1.hash = t2.hash "
+                    + "FROM %s_hashes_filtered t1 JOIN %s_hashes_filtered t2 ON upper(t1.hash) = upper(t2.hash) "
                     + "WHERE "
                     + "  t1.gbifId < t2.gbifId AND "
                     + "  t1.datasetKey != t2.datasetKey "
