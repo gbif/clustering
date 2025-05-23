@@ -11,7 +11,7 @@
   <groupId>org.gbif.clustering</groupId>
   <artifactId>clustering-gbif</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.9-SNAPSHOT</version>
+  <version>1.0.10-SNAPSHOT</version>
 
   <name>GBIF :: Clustering</name>
   <description>Batch process to cluster all GBIF records</description>
