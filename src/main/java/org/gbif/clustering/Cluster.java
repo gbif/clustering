@@ -149,7 +149,11 @@ public class Cluster implements Serializable {
                 Encoders.row(HASH_ROW_SCHEMA))
             .dropDuplicates();
     spark.sql("DROP TABLE IF EXISTS " + hiveTablePrefix + "_hashes PURGE");
-    hashes.write().format("parquet").mode(SaveMode.Overwrite).saveAsTable(hiveTablePrefix + "_hashes");
+    hashes
+        .write()
+        .format("parquet")
+        .mode(SaveMode.Overwrite)
+        .saveAsTable(hiveTablePrefix + "_hashes");
 
     // To avoid NxN, filter to a threshold to exclude e.g. gut worm analysis datasets
     Dataset<Row> hashCounts =
@@ -157,7 +161,11 @@ public class Cluster implements Serializable {
             String.format(
                 "SELECT hash, count(*) AS c FROM %s_hashes GROUP BY hash", hiveTablePrefix));
     spark.sql("DROP TABLE IF EXISTS " + hiveTablePrefix + "_hash_counts PURGE");
-    hashCounts.write().format("parquet").mode(SaveMode.Overwrite).saveAsTable(hiveTablePrefix + "_hash_counts");
+    hashCounts
+        .write()
+        .format("parquet")
+        .mode(SaveMode.Overwrite)
+        .saveAsTable(hiveTablePrefix + "_hash_counts");
     Dataset<Row> filteredHashes =
         spark.sql(
             String.format(
@@ -167,7 +175,11 @@ public class Cluster implements Serializable {
                     + "WHERE t2.c <= %d",
                 hiveTablePrefix, hiveTablePrefix, hashCountThreshold));
     spark.sql("DROP TABLE IF EXISTS " + hiveTablePrefix + "_hashes_filtered PURGE");
-    filteredHashes.write().format("parquet").mode(SaveMode.Overwrite).saveAsTable(hiveTablePrefix + "_hashes_filtered");
+    filteredHashes
+        .write()
+        .format("parquet")
+        .mode(SaveMode.Overwrite)
+        .saveAsTable(hiveTablePrefix + "_hashes_filtered");
 
     // distinct cross join to generate the candidate pairs for comparison
     Dataset<Row> candidates =
@@ -182,7 +194,11 @@ public class Cluster implements Serializable {
                     + "GROUP BY t1.gbifId, t1.datasetKey, t2.gbifId, t2.datasetKey",
                 hiveTablePrefix, hiveTablePrefix));
     spark.sql("DROP TABLE IF EXISTS " + hiveTablePrefix + "_candidates PURGE");
-    candidates.write().format("parquet").mode(SaveMode.Overwrite).saveAsTable(hiveTablePrefix + "_candidates");
+    candidates
+        .write()
+        .format("parquet")
+        .mode(SaveMode.Overwrite)
+        .saveAsTable(hiveTablePrefix + "_candidates");
   }
 
   /** Reads the candidate pairs table, and runs the record to record comparison. */
@@ -227,7 +243,11 @@ public class Cluster implements Serializable {
         pairs.flatMap(
             (FlatMapFunction<Row, Row>) this::relateRecords, Encoders.row(RELATIONSHIP_SCHEMA));
     spark.sql("DROP TABLE IF EXISTS " + hiveTablePrefix + "_relationships PURGE");
-    relationships.write().format("parquet").mode(SaveMode.Overwrite).saveAsTable(hiveTablePrefix + "_relationships");
+    relationships
+        .write()
+        .format("parquet")
+        .mode(SaveMode.Overwrite)
+        .saveAsTable(hiveTablePrefix + "_relationships");
     return relationships;
   }
 
