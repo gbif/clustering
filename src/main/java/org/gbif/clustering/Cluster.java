@@ -23,6 +23,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FsShell;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.Cell;
@@ -67,6 +68,8 @@ import scala.Tuple2;
 @Data
 @Slf4j
 public class Cluster implements Serializable {
+
+  private String hiveWarehousePath; // e.g. /stackable/warehouse/prod.db
   private String hiveDB;
   private String sourceTable;
   private String hiveTablePrefix;
@@ -114,10 +117,13 @@ public class Cluster implements Serializable {
             .getOrCreate();
     spark.sql("use " + hiveDB);
 
-    createCandidatePairs(spark);
-    Dataset<Row> relationships = generateRelationships(spark);
-    generateHFiles(relationships);
-    replaceHBaseTable();
+    try (FileSystem fileSystem = FileSystem.get(hadoopConf())) {
+      dropPreviousTables(fileSystem, spark);
+      createCandidatePairs(spark);
+      Dataset<Row> relationships = generateRelationships(spark);
+      generateHFiles(relationships);
+      replaceHBaseTable();
+    }
   }
 
   private String sourceTableQualifiedName() {
@@ -362,6 +368,28 @@ public class Cluster implements Serializable {
     } else {
       throw new IllegalArgumentIOException("Target directory must be within /tmp");
     }
+  }
+
+  /** Drops all temporary tables and the underlying directories. */
+  private void dropPreviousTables(FileSystem fileSystem, SparkSession spark) throws IOException {
+    dropTable(spark, fileSystem, hiveTablePrefix + "_input");
+    dropTable(spark, fileSystem, hiveTablePrefix + "_hashes");
+    dropTable(spark, fileSystem, hiveTablePrefix + "_hash_counts");
+    dropTable(spark, fileSystem, hiveTablePrefix + "_hashes_filtered");
+    dropTable(spark, fileSystem, hiveTablePrefix + "_candidates");
+    dropTable(spark, fileSystem, hiveTablePrefix + "_relationships");
+  }
+
+  /** Utility to cleanly drop the table and target directory */
+  private void dropTable(SparkSession spark, FileSystem fs, String table) throws IOException {
+    spark.sql("DROP TABLE IF EXISTS " + table + " PURGE");
+
+    // Remove the directory as well (https://github.com/gbif/clustering/issues/4)
+    assert hiveWarehousePath.length() >= 4; // /dev, /test, /stackable/warehouse/prod.db
+    log.info("Deleting " + hiveWarehousePath + "/" + table);
+    Path p = new Path(hiveWarehousePath, table);
+    assert !p.toString().contains(".."); // defensive
+    fs.delete(p, true);
   }
 
   /** Runs the record to record comparison */
