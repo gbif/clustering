@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>58</version>
+    <version>59</version>
   </parent>
 
   <groupId>org.gbif.clustering</groupId>
@@ -59,7 +59,7 @@
 
   <properties>
     <!-- Common variables -->
-    <jdkLevel>11</jdkLevel>
+    <jdkLevel>17</jdkLevel>
     <maven.compiler.source>${jdkLevel}</maven.compiler.source>
     <maven.compiler.target>${jdkLevel}</maven.compiler.target>
 
@@ -350,7 +350,14 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>17</source>
+          <target>17</target>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-
 </project>

@@ -52,6 +52,7 @@ class ArgsParser {
 
     Cluster.ClusterBuilder builder =
         Cluster.builder()
+            .hiveWarehousePath(properties.getProperty("hiveWarehousePath"))
             .hiveDB(properties.getProperty("hiveDB"))
             .sourceTable(properties.getProperty("sourceTable"))
             .hiveTablePrefix(properties.getProperty("hiveTablePrefix"))
