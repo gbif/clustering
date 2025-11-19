@@ -49,78 +49,68 @@ class HashUtilities {
     String speciesKey = o.getSpeciesKey();
     Set<String> identifiers = hashCodesAndIDs(o, true);
 
-    Set<Row> hashes = new HashSet<>();
+    Set<String> hashes = new HashSet<>();
 
     // generic grouping on species, time and space
     if (noNulls(lat, lng, year, month, day, speciesKey)) {
       hashes.add(
-          RowFactory.create(
-              o.getId(),
-              o.getDatasetKey(),
-              String.join(
-                  "|",
-                  speciesKey,
-                  String.valueOf(Math.round(lat * 1000)),
-                  String.valueOf(Math.round(lng * 1000)),
-                  year.toString(),
-                  month.toString(),
-                  day.toString())));
+          String.join(
+              "|",
+              speciesKey,
+              String.valueOf(Math.round(lat * 1000)),
+              String.valueOf(Math.round(lng * 1000)),
+              year.toString(),
+              month.toString(),
+              day.toString()));
     }
 
     // identifiers overlap for the same species
     if (noNulls(speciesKey)) {
       for (String id : identifiers) {
-        hashes.add(
-            RowFactory.create(o.getId(), o.getDatasetKey(), String.join("|", speciesKey, id)));
+        hashes.add(String.join("|", speciesKey, id));
       }
     }
 
     // anything claiming a type for the same name is of interest (regardless of type stated)
     if (noNulls(taxonKey, typeStatus) && !typeStatus.isEmpty())
-      hashes.add(
-          RowFactory.create(o.getId(), o.getDatasetKey(), String.join("|", taxonKey, "TYPE")));
+      hashes.add(String.join("|", taxonKey, "TYPE"));
 
     // all similar species recorded by the same person within the same year are of interest
     if (noNulls(taxonKey, year, recordedBy)) {
       for (String r : recordedBy) {
-        hashes.add(
-            RowFactory.create(o.getId(), o.getDatasetKey(), String.join("|", year.toString(), r)));
+        hashes.add(String.join("|", year.toString(), r));
       }
     }
 
     // append the specimen specific hashes
     hashes.addAll(specimenHashes(o));
 
-    return hashes.iterator();
+    Set<Row> rows = new HashSet<>();
+    for (String hash : hashes) {
+      rows.add(RowFactory.create(o.getId(), o.getDatasetKey(), hash.toUpperCase()));
+    }
+    return rows.iterator();
   }
 
   /**
    * Generate hashes for specimens combining the various IDs and accepted species. Specimens often
    * link by record identifiers, while other occurrence data skews here greatly for little benefit.
    */
-  private static Set<Row> specimenHashes(OccurrenceFeatures o) {
-    Set<Row> hashes = new HashSet<>();
+  private static Set<String> specimenHashes(OccurrenceFeatures o) {
+    Set<String> hashes = new HashSet<>();
     String bor = o.getBasisOfRecord();
     if (bor != null && SPECIMEN_BASIS_OF_RECORD_SET.contains(bor)) {
 
       // non-numeric identifiers for specimens used across datasets
       Set<String> codes = hashCodesAndIDs(o, true);
       for (String code : codes) {
-        hashes.add(
-            RowFactory.create(
-                o.getId(),
-                o.getDatasetKey(),
-                String.join("|", o.getSpeciesKey(), OccurrenceRelationships.normalizeID(code))));
+        hashes.add(String.join("|", o.getSpeciesKey(), OccurrenceRelationships.normalizeID(code)));
       }
 
       // stricter code hashing (non-numeric) but without species
       Set<String> codesStrict = hashCodesAndIDs(o, false);
       for (String code : codesStrict) {
-        hashes.add(
-            RowFactory.create(
-                o.getId(),
-                o.getDatasetKey(),
-                String.join("|", OccurrenceRelationships.normalizeID(code))));
+        hashes.add(String.join("|", OccurrenceRelationships.normalizeID(code)));
       }
     }
     return hashes;
