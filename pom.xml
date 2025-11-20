@@ -11,7 +11,7 @@
   <groupId>org.gbif.clustering</groupId>
   <artifactId>clustering-gbif</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.13-SNAPSHOT</version>
+  <version>1.0.13</version>
 
   <name>GBIF :: Clustering</name>
   <description>Batch process to cluster all GBIF records</description>
@@ -20,7 +20,7 @@
     <connection>scm:git:git@github.com:gbif/clustering.git</connection>
     <url>https://github.com/gbif/clustering</url>
     <developerConnection>scm:git:git@github.com:gbif/clustering.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>clustering-gbif-1.0.13</tag>
   </scm>
 
   <distributionManagement>
