@@ -122,7 +122,7 @@ public class Cluster2 implements Serializable {
       createCandidatePairs(spark);
       generateRelationships(spark);
       generateHFiles(spark);
-      // replaceHBaseTable();
+      replaceHBaseTable();
 
       removeTargetDir(fileSystem); // clean up working directory
     }
@@ -423,6 +423,8 @@ public class Cluster2 implements Serializable {
           "Table {} truncated and reloaded in {}",
           hbaseTable,
           Duration.between(start, Instant.now()).toMillis());
+
+      admin.majorCompact(table.getName()); // bring data locality
 
     } catch (Exception e) {
       throw new IOException(e);
