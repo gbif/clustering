@@ -186,14 +186,6 @@ public class Cluster2 implements Serializable {
     // To avoid NxN, filter to a threshold to exclude e.g. gut worm analysis datasets
     spark
         .sql(
-            /*
-            String.format(
-                "WITH hash_counts AS (SELECT hash, count(*) AS c FROM %1$s_hashes GROUP BY hash HAVING count(*) <= %2$d) "
-                    + "SELECT t1.gbifId, t1.datasetKey, t1.hash AS hash "
-                    + "FROM %1$s_hashes t1 "
-                    + "JOIN hash_counts h on t1.hash = h.hash",
-                hiveTablePrefix, hashCountThreshold))
-                 */
             String.format(
                 "SELECT gbifId, datasetKey, hash "
                     + "FROM ( "
@@ -287,22 +279,24 @@ public class Cluster2 implements Serializable {
             .map(col -> "t2." + col + " AS t2_" + col)
             .collect(Collectors.joining(", "));
 
-    String sql =
-        String.format(
-            "SELECT %1$s, %2$s "
-                + "FROM %3$s h "
-                + "JOIN %4$s t1 ON h.id1 = t1.gbifId "
-                + "JOIN %4$s t2 ON h.id2 = t2.gbifId",
-            t1Columns, t2Columns, hiveTablePrefix + "_candidates", hiveTablePrefix + "_input");
+    // expand the candidates with the fields needed to compare
+    spark
+        .sql(
+            String.format(
+                "SELECT %1$s, %2$s "
+                    + "FROM %3$s h "
+                    + "JOIN %4$s t1 ON h.id1 = t1.gbifId "
+                    + "JOIN %4$s t2 ON h.id2 = t2.gbifId",
+                t1Columns, t2Columns, hiveTablePrefix + "_candidates", hiveTablePrefix + "_input"))
+        .write()
+        .format("parquet")
+        .mode(SaveMode.Overwrite)
+        .saveAsTable(hiveTablePrefix + "_candidates_processed");
 
     // Compare all candidate pairs and generate the relationships
-    Dataset<Row> relationships =
-        spark
-            .sql(sql)
-            .flatMap(
-                (FlatMapFunction<Row, Row>) this::relateRecords, Encoders.row(RELATIONSHIP_SCHEMA));
-
-    relationships
+    spark
+        .sql(String.format("SELECT * FROM %s", hiveTablePrefix + "_candidates_processed"))
+        .flatMap((FlatMapFunction<Row, Row>) this::relateRecords, Encoders.row(RELATIONSHIP_SCHEMA))
         .write()
         .format("parquet")
         .mode(SaveMode.Overwrite)
@@ -459,6 +453,7 @@ public class Cluster2 implements Serializable {
     dropTable(spark, fileSystem, hiveTablePrefix + "_hash_counts");
     dropTable(spark, fileSystem, hiveTablePrefix + "_hashes_filtered");
     dropTable(spark, fileSystem, hiveTablePrefix + "_candidates");
+    dropTable(spark, fileSystem, hiveTablePrefix + "_candidates_processed");
     dropTable(spark, fileSystem, hiveTablePrefix + "_relationships");
   }
 
