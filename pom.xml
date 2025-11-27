@@ -8,18 +8,18 @@
     <version>59</version>
   </parent>
 
-  <groupId>org.gbif.clustering</groupId>
-  <artifactId>clustering-gbif</artifactId>
+  <groupId>org.gbif.spark</groupId>
+  <artifactId>gbif-spark-batch</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.14-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
 
-  <name>GBIF :: Clustering</name>
-  <description>Batch process to cluster all GBIF records</description>
+  <name>GBIF :: gbif-spark-batch</name>
+  <description>Batch processes using Spark</description>
 
   <scm>
-    <connection>scm:git:git@github.com:gbif/clustering.git</connection>
-    <url>https://github.com/gbif/clustering</url>
-    <developerConnection>scm:git:git@github.com:gbif/clustering.git</developerConnection>
+    <connection>scm:git:git@github.com:gbif/gbif-spark-batch.git</connection>
+    <url>https://github.com/gbif/gbif-spark-batch</url>
+    <developerConnection>scm:git:git@github.com:gbif/gbif-spark-batch.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 

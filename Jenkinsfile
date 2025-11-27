@@ -52,14 +52,14 @@ pipeline {
       }
       steps {
         configFileProvider([configFile(fileId: 'org.jenkinsci.plugins.configfiles.maven.GlobalMavenSettingsConfig1387378707709', variable: 'MAVEN_SETTINGS')]) {
-          git 'https://github.com/gbif/clustering.git'
+          git 'https://github.com/gbif/gbif-spark-batch.git'
           sh 'mvn -s $MAVEN_SETTINGS release:prepare release:perform -Denforcer.skip=true -DskipTests'
         }
       }
     }
-    stage('Build and push Docker images: Clustering') {
+    stage('Build and push Docker images: gbif-spark-batch') {
       steps {
-        sh 'build/clustering-docker-build.sh ${RELEASE} ${VERSION}'
+        sh 'build/gbif-spark-batch-docker-build.sh ${RELEASE} ${VERSION}'
       }
     }
   }
